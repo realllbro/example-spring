@@ -1,6 +1,8 @@
 package com.example.mvc.controller;
 
+import com.example.configuration.exception.BaseException;
 import com.example.configuration.http.BaseResponse;
+import com.example.configuration.http.BaseResponseCode;
 import com.example.mvc.domain.Board;
 import com.example.mvc.parameter.BoardParameter;
 import com.example.mvc.service.BoardService;
@@ -8,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +54,12 @@ public class BoardController {
             @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1")
     })
     public BaseResponse<Board> get(@PathVariable int boardSeq){
-        return new BaseResponse<Board>(service.get(boardSeq));
+        Board board = service.get(boardSeq);
+        // null 처리
+        if(board == null){
+            throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[]{"게시물"});
+        }
+        return new BaseResponse<Board>(board);
     }
 
     /**
@@ -65,6 +73,14 @@ public class BoardController {
             @ApiImplicitParam(name = "contents", value = "내용", example = "내용입니다.")
     })
     public BaseResponse<Integer> save(BoardParameter board){
+        // 제목 필수 체크
+        if(StringUtils.isEmpty(board.getTitle())){
+            throw new BaseException(BaseResponseCode.VALIDATE_REQUIRED, new String[]{"title","제목"});
+        }
+        // 내용 필수 체크
+        if(StringUtils.isEmpty(board.getContents())){
+            throw new BaseException(BaseResponseCode.VALIDATE_REQUIRED, new String[]{"content","내용"});
+        }
         service.save(board);
         return new BaseResponse<Integer>(board.getBoardSeq());
     }
