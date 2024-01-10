@@ -2,31 +2,19 @@ server:
   address: localhost
   port: 8095
 
+
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    jdbc-url: jdbc:mysql://localhost:3306/brodio?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&userSSL=true
+#    username: docker_mysql
+#    password: docker_mysql
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3307/brodio?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&userSSL=true
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/brodio?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&userSSL=true
     username: docker_mysql
     password: docker_mysql
 
-#  jpa:
-#    database: mysql
-#    show-sql: true
-#    hibernate:
-#      ddl-auto: update
-#    properties:
-#      hibernate:
-#        show_sql: true
-#        format_sql: true
-#
-#  profiles:
-#    include: oauth
-
-# createDatabaseIfNotExist: ??????? ???? ??? ???? ??
-# useUnicode: ???? ?? ?? ??
-# characterEncoding: ??? ??? ?? ??
-# characterSetResults: ???? ??? ?? ??
-# userSSL: SSL ???? ??
-
-# spring.jpa.properties.hibernate.show-sql: ??????? ??? ?? SQL?? ??? ??
-# spring.jpa.properties.hibernate.format_sql: SQL?? ??? ?? ??
+logging:
+  config: classpath:logback/logback-default.xml
