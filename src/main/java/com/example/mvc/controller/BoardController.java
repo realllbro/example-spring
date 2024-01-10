@@ -1,5 +1,6 @@
 package com.example.mvc.controller;
 
+import com.example.configuration.http.BaseResponse;
 import com.example.mvc.domain.Board;
 import com.example.mvc.parameter.BoardParameter;
 import com.example.mvc.service.BoardService;
@@ -27,11 +28,16 @@ public class BoardController {
      * 목록 조회
      * @return
      */
-    @GetMapping
-    @ApiOperation(value = "목록조회", notes = "목록 정보를 조회할 수 있다.")
-    public List<Board> getList(BoardParameter board){
+    @GetMapping("/sample")
+    @ApiOperation(value = "BaseResponse 사용안함", notes = "List<Board> 로 리턴한다.")
+    public List<Board> getList_sample(BoardParameter board){
         return service.getList(board);
+    }
 
+    @GetMapping()
+    @ApiOperation(value = "목록조회", notes = "목록 정보를 조회할 수 있다.")
+    public BaseResponse<List<Board>> getList(BoardParameter board){
+        return new BaseResponse<List<Board>>(service.getList(board));
     }
 
     /**
@@ -44,8 +50,8 @@ public class BoardController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1")
     })
-    public Board get(@PathVariable int boardSeq){
-        return service.get(boardSeq);
+    public BaseResponse<Board> get(@PathVariable int boardSeq){
+        return new BaseResponse<Board>(service.get(boardSeq));
     }
 
     /**
@@ -58,8 +64,9 @@ public class BoardController {
             @ApiImplicitParam(name = "title", value = "제목", example = "제목입니다."),
             @ApiImplicitParam(name = "contents", value = "내용", example = "내용입니다.")
     })
-    public void save(BoardParameter board){
+    public BaseResponse<Integer> save(BoardParameter board){
         service.save(board);
+        return new BaseResponse<Integer>(board.getBoardSeq());
     }
 
     /**
@@ -73,8 +80,14 @@ public class BoardController {
             @ApiImplicitParam(name = "title", value = "제목", example = "제목 수정 입니다."),
             @ApiImplicitParam(name = "contents", value = "내용", example = "내용 수정 입니다.")
     })
-    public void update(BoardParameter board){
+    public BaseResponse<Boolean> update(BoardParameter board){
+        // 조회된 데이터가 없으면 false 리턴 있으면 수정 진행
+        Board targetObj = service.get(board.getBoardSeq());
+        if(targetObj == null){
+            return new BaseResponse<Boolean>(false);
+        }
         service.update(board);
+        return new BaseResponse<Boolean>(true);
     }
 
     /**
@@ -83,7 +96,13 @@ public class BoardController {
      */
     @DeleteMapping("/{boardSeq}")
     @ApiOperation(value = "삭제", notes = "게시물 번호에 해당하는 상세 정보를 조회할 수 있다.")
-    public void delete(@PathVariable int boardSeq){
+    public BaseResponse<Boolean> delete(@PathVariable int boardSeq){
+        // 조회된 데이터가 없으면 false 리턴 있으면 삭제 진행
+        Board targetObj = service.get(boardSeq);
+        if(targetObj == null){
+            return new BaseResponse<Boolean>(false);
+        }
         service.delete(boardSeq);
+        return new BaseResponse<Boolean>(true);
     }
 }
