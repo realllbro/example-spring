@@ -1,6 +1,7 @@
 package com.example.mvc.service;
 
 import com.example.mvc.domain.Board;
+import com.example.mvc.parameter.BoardParameter;
 import com.example.mvc.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class BoardService {
      * 목록 조회
      * @return
      */
-    public List<Board> getList(){
-        return repository.getList();
+    public List<Board> getList(BoardParameter board){
+        return repository.getList(board);
 
     }
 
@@ -38,7 +39,7 @@ public class BoardService {
      * 저장
      * @param board
      */
-    public void save(Board board){
+    public void save(BoardParameter board){
         repository.save(board);
     }
 
@@ -46,7 +47,7 @@ public class BoardService {
      * 수정
      * @param board
      */
-    public void update(Board board){
+    public void update(BoardParameter board){
         repository.update(board);
     }
 
