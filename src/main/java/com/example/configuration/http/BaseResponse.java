@@ -21,5 +21,8 @@ public class BaseResponse<T> {
         this.message = message;
     }
 
+    public void test(){
+        
+    }
 
 }
